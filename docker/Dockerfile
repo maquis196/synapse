@@ -26,7 +26,9 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libssl-dev \
     libffi-dev \
-    python-dev \
+    python3-dev \
+    libxml++2.6-dev \
+    libxslt1-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies that are not available as wheels, to speed up rebuilds
