@@ -65,7 +65,7 @@ commands:
         default: true
       platforms:
         type: string
-        default: linux/armhf,linux/amd64
+        default: linux/amd64
       context:
         type: string
         default: .
