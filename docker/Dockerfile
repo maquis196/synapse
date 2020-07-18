@@ -31,6 +31,7 @@ RUN apt-get update && apt-get install -y \
     libxslt1-dev \
     python3-nacl \
     python3-cryptography \
+    python3-wheel \
  && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies that are not available as wheels, to speed up rebuilds
@@ -41,6 +42,7 @@ RUN pip install --prefix="/install" --no-warn-script-location \
         prometheus-client \
         psycopg2 \
         pycparser \
+        pynacl \
         pyrsistent \
         pyyaml \
         simplejson \
