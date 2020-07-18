@@ -73,5 +73,5 @@ commands:
         type: string
         default: --label gitsha1=${CIRCLE_SHA1}
     steps:
-      - run: docker buildx build -f << parameters.dockerfile >><<# parameters.push >> --push<</ parameters.push >> --platform << parameters.platforms >> << parameters.parameters >> << parameters.context >>
+      - run: docker buildx build -f << parameters.dockerfile >><<# parameters.push >> --push<</ parameters.push >> --platform << parameters.platforms >> << parameters.parameters >> << parameters.context >> --progress=plain
 
