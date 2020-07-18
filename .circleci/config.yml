@@ -50,7 +50,8 @@ commands:
       - run: mkdir -vp ~/.docker/cli-plugins/ ~/dockercache
       - run: curl --silent -L "https://github.com/docker/buildx/releases/download/<< parameters.buildx_version >>/buildx-<< parameters.buildx_version >>.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
       - run: chmod a+x ~/.docker/cli-plugins/docker-buildx
-      - run: docker buildx create
+      - run: docker context create anchor
+      - run: docker buildx create anchor --use
 
   docker_build:
     description: Builds and pushed images to dockerhub using buildx
