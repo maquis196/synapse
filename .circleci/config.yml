@@ -10,7 +10,7 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          parameters: --label gitsha1=${CIRCLE_SHA1} -t matrixdotorg/synapse:${CIRCLE_TAG} -t maquis196/synapse:${CIRCLE_TAG}
+          parameters: --label gitsha1=${CIRCLE_SHA1} -t maquis196/synapse:${CIRCLE_TAG}
 
   dockerhubuploadlatest:
     docker:
@@ -22,7 +22,7 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          parameters: --label gitsha1=${CIRCLE_SHA1} -t matrixdotorg/synapse:latest -t maquis196/synapse:latest
+          parameters: --label gitsha1=${CIRCLE_SHA1} -t maquis196/synapse:latest
 
 workflows:
   build:
@@ -50,6 +50,7 @@ commands:
       - run: mkdir -vp ~/.docker/cli-plugins/ ~/dockercache
       - run: curl --silent -L "https://github.com/docker/buildx/releases/download/<< parameters.buildx_version >>/buildx-<< parameters.buildx_version >>.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
       - run: chmod a+x ~/.docker/cli-plugins/docker-buildx
+      - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
       - run: docker context create anchor
       - run: docker buildx create anchor --use
 
