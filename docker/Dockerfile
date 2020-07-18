@@ -35,7 +35,8 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies that are not available as wheels, to speed up rebuilds
-RUN pip install --prefix="/install" --no-warn-script-location \
+RUN pip3 install --prefix="/install" --no-warn-script-location \
+        --extra-index-url=https://www.piwheels.org/simple
         frozendict \
         jaeger-client \
         opentracing \
