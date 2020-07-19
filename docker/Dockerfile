@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y \
     python3-nacl \
     python3-cryptography \
     python3-wheel \
+    libjpeg-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies that are not available as wheels, to speed up rebuilds
