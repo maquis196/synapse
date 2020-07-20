@@ -9,7 +9,11 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          parameters: --label gitsha1=${CIRCLE_SHA1} -t maquis196/synapse:${CIRCLE_TAG}
+          tag: -t maquis196/synapse:${CIRCLE_TAG}
+          platforms: linux/amd64
+      - docker_build:
+          tag: -t maquis196/synapse:${CIRCLE_TAG}
+          platforms: linux/arm64,linux/arm/v7
 
   dockerhubuploadlatest:
     docker:
@@ -20,7 +24,11 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          parameters: --label gitsha1=${CIRCLE_SHA1} -t maquis196/synapse:latest
+          tag: -t maquis196/synapse:latest
+          platforms: linux/amd64
+      - docker_build:
+          tag: -t maquis196/synapse:latest
+          platforms: linux/arm64,linux/arm/v7
 
 workflows:
   build:
@@ -67,9 +75,9 @@ commands:
       context:
         type: string
         default: .
-      parameters:
+      label:
         type: string
         default: --label gitsha1=${CIRCLE_SHA1}
     steps:
-      - run: docker buildx build -f << parameters.dockerfile >><<# parameters.push >> --push<</ parameters.push >> --platform << parameters.platforms >> << parameters.parameters >> << parameters.context >> --progress=plain
+      - run: docker buildx build -f << parameters.dockerfile >><<# parameters.push >> --push<</ parameters.push >> --platform << parameters.platforms >> << parameters.label >> << parameters.tag >> << parameters.context >> --progress=plain
 
