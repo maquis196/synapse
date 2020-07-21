@@ -42,7 +42,7 @@ workflows:
       - dockerhubuploadlatest:
           filters:
             branches:
-              only: master
+              only: cmt_circleci_multiarch
 
 commands:
   docker_prepare:
