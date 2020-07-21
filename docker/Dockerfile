@@ -23,21 +23,20 @@ FROM docker.io/python:${PYTHON_VERSION}-slim as builder
 
 RUN apt-get update && apt-get install -y \
     build-essential \
+    libffi-dev \
+    libjpeg-dev \
     libpq-dev \
     libssl-dev \
-    libffi-dev \
-    python3-dev \
     libxml++2.6-dev \
     libxslt1-dev \
-    python3-nacl \
     python3-cryptography \
+    python3-dev \
+    python3-nacl \
     python3-wheel \
-    libjpeg-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # Build dependencies that are not available as wheels, to speed up rebuilds
 RUN pip3 install --prefix="/install" --no-warn-script-location \
-        --extra-index-url=https://gergely.imreh.net/wheels/ \
         frozendict \
         jaeger-client \
         opentracing \

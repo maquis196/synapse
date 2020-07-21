@@ -27,9 +27,6 @@ jobs:
           tag: -t maquis196/synapse:latest
           platforms: linux/amd64
       - docker_build:
-          tag: -t maquis196/synapse:test_latest
-          platforms: linux/amd64
-      - docker_build:
           tag: -t maquis196/synapse:latest
           platforms: linux/amd64,linux/arm64,linux/arm/v7
 
@@ -60,8 +57,7 @@ commands:
       - run: curl --silent -L "https://github.com/docker/buildx/releases/download/<< parameters.buildx_version >>/buildx-<< parameters.buildx_version >>.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
       - run: chmod a+x ~/.docker/cli-plugins/docker-buildx
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker context create anchor
-      - run: docker buildx create anchor --use
+      - run: docker buildx create
 
   docker_build:
     description: Builds and pushed images to dockerhub using buildx
@@ -69,20 +65,14 @@ commands:
       dockerfile:
         type: string
         default: docker/Dockerfile
-      push:
-        type: boolean
-        default: true
       platforms:
         type: string
-        default: linux/amd64,linux/arm64,linux/arm/v7
-      context:
-        type: string
-        default: .
+        default: linux/amd64
       label:
         type: string
         default: --label gitsha1=${CIRCLE_SHA1}
       tag:
         type: string
     steps:
-      - run: docker buildx build -f << parameters.dockerfile >><<# parameters.push >> --push<</ parameters.push >> --platform << parameters.platforms >> << parameters.label >> << parameters.tag >> << parameters.context >> --progress=plain
+      - run: docker buildx build -f << parameters.dockerfile >> --push --platform << parameters.platforms >> << parameters.label >> << parameters.tag >> << parameters.context >> --progress=plain
 
