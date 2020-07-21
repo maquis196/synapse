@@ -13,7 +13,7 @@ jobs:
           platforms: linux/amd64
       - docker_build:
           tag: -t matrixdotorg/synapse:${CIRCLE_TAG} -t maquis196/synapse:${CIRCLE_TAG}-py3
-          platforms: linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm64/v7,linux/arm64/v8
 
   dockerhubuploadlatest:
     docker:
@@ -24,11 +24,11 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          tag: -t matrixdotorg/synapse:latest -t maquis196/synapse:latest-py3
+          tag: -t matrixdotorg/synapse:latest
           platforms: linux/amd64
       - docker_build:
-          tag: -t matrixdotorg/synapse:latest -t maquis196/synapse:latest-py3
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          tag: -t matrixdotorg/synapse:latest
+          platforms: linux/amd64,linux/arm64,linux/arm64/v7,linux/arm64/v8
 
 workflows:
   build:
@@ -42,7 +42,7 @@ workflows:
       - dockerhubuploadlatest:
           filters:
             branches:
-              only: master
+              only: cmt_circleci_multiarch
 
 commands:
   docker_prepare:
