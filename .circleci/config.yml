@@ -27,8 +27,11 @@ jobs:
           tag: -t maquis196/synapse:latest
           platforms: linux/amd64
       - docker_build:
+          tag: -t maquis196/synapse:test_latest
+          platforms: linux/amd64
+      - docker_build:
           tag: -t maquis196/synapse:latest
-          platforms: linux/arm64,linux/arm/v7
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
 
 workflows:
   build:
