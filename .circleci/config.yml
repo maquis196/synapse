@@ -5,7 +5,8 @@ jobs:
       - image: docker:git
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
@@ -20,7 +21,8 @@ jobs:
       - image: docker:git
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 19.03.12
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
@@ -46,7 +48,7 @@ workflows:
 
 commands:
   docker_prepare:
-    description: Downloads the buildx cli plugin and enables multiarch execution
+    description: Downloads the buildx cli plugin and enables multiarch images
     parameters:
       buildx_version:
         type: string
