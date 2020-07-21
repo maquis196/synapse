@@ -9,7 +9,7 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          tag: -t maquis196/synapse:${CIRCLE_TAG}
+          tag: -t maquis196/synapse:${CIRCLE_TAG} -t maquis196/synapse:${CIRCLE_TAG}-py3
           platforms: linux/amd64
       - docker_build:
           tag: -t maquis196/synapse:${CIRCLE_TAG}
@@ -24,7 +24,7 @@ jobs:
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
-          tag: -t maquis196/synapse:latest
+          tag: -t maquis196/synapse:latest -t maquis196/synapse:${CIRCLE_TAG}-py3
           platforms: linux/amd64
       - docker_build:
           tag: -t maquis196/synapse:latest
@@ -42,7 +42,7 @@ workflows:
       - dockerhubuploadlatest:
           filters:
             branches:
-              only: cmt_circleci_multiarch
+              only: master
 
 commands:
   docker_prepare:
