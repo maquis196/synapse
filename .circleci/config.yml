@@ -5,8 +5,7 @@ jobs:
       - image: docker:git
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 19.03.12
+      - setup_remote_docker
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
@@ -21,8 +20,7 @@ jobs:
       - image: docker:git
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 19.03.12
+      - setup_remote_docker
       - docker_prepare
       - run: docker login --username $DOCKER_HUB_USERNAME --password $DOCKER_HUB_PASSWORD
       - docker_build:
@@ -59,7 +57,8 @@ commands:
       - run: curl --silent -L "https://github.com/docker/buildx/releases/download/<< parameters.buildx_version >>/buildx-<< parameters.buildx_version >>.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
       - run: chmod a+x ~/.docker/cli-plugins/docker-buildx
       - run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-      - run: docker buildx create
+      - run: docker context create builder
+      - run: docker buildx create builder --use
 
   docker_build:
     description: Builds and pushed images to dockerhub using buildx
