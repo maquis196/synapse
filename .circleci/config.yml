@@ -74,5 +74,5 @@ commands:
       tag:
         type: string
     steps:
-      - run: docker buildx build -f << parameters.dockerfile >> --push --platform << parameters.platforms >> << parameters.label >> << parameters.tag >> << parameters.context >> --progress=plain
+      - run: docker buildx build -f << parameters.dockerfile >> --push --platform << parameters.platforms >> << parameters.label >> << parameters.tag >> --progress=plain
 
