@@ -1,10 +1,11 @@
 # Using a reverse proxy with Synapse
 
 It is recommended to put a reverse proxy such as
-[nginx](https://nginx.org/en/docs/http/ngx_http_proxy_module.html),
 [Apache](https://httpd.apache.org/docs/current/mod/mod_proxy_http.html),
-[Caddy](https://caddyserver.com/docs/quick-starts/reverse-proxy) or
-[HAProxy](https://www.haproxy.org/) in front of Synapse. One advantage
+[Caddy](https://caddyserver.com/docs/quick-starts/reverse-proxy),
+[HAProxy](https://www.haproxy.org/),
+[nginx](https://nginx.org/en/docs/http/ngx_http_proxy_module.html) or
+[traefik](https://doc.traefik.io/traefik/) in front of Synapse. One advantage
 of doing so is that it means that you can expose the default https port
 (443) to Matrix clients without needing to run Synapse with root
 privileges.
@@ -35,65 +36,6 @@ the reverse proxy and the homeserver.
 ## Reverse-proxy configuration examples
 
 **NOTE**: You only need one of these.
-
-### nginx
-
-```
-server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
-
-    # For the federation port
-    listen 8448 ssl default_server;
-    listen [::]:8448 ssl default_server;
-
-    server_name matrix.example.com;
-
-    location ~* ^(\/_matrix|\/_synapse\/client) {
-        proxy_pass http://localhost:8008;
-        proxy_set_header X-Forwarded-For $remote_addr;
-        # Nginx by default only allows file uploads up to 1M in size
-        # Increase client_max_body_size to match max_upload_size defined in homeserver.yaml
-        client_max_body_size 10M;
-    }
-}
-```
-
-**NOTE**: Do not add a path after the port in `proxy_pass`, otherwise nginx will
-canonicalise/normalise the URI.
-
-### Caddy 1
-
-```
-matrix.example.com {
-  proxy /_matrix http://localhost:8008 {
-    transparent
-  }
-
-  proxy /_synapse/client http://localhost:8008 {
-    transparent
-  }
-}
-
-example.com:8448 {
-  proxy / http://localhost:8008 {
-    transparent
-  }
-}
-```
-
-### Caddy 2
-
-```
-matrix.example.com {
-  reverse_proxy /_matrix/* http://localhost:8008
-  reverse_proxy /_synapse/client/* http://localhost:8008
-}
-
-example.com:8448 {
-  reverse_proxy http://localhost:8008
-}
-```
 
 ### Apache
 
@@ -129,6 +71,66 @@ example.com:8448 {
 </IfModule>
 ```
 
+### Caddy 1
+
+```
+matrix.example.com {
+  proxy /_matrix http://localhost:8008 {
+    transparent
+  }
+
+  proxy /_synapse/client http://localhost:8008 {
+    transparent
+  }
+}
+
+example.com:8448 {
+  proxy / http://localhost:8008 {
+    transparent
+  }
+}
+```
+
+### Caddy 2
+
+```
+matrix.example.com {
+  reverse_proxy /_matrix/* http://localhost:8008
+  reverse_proxy /_synapse/client/* http://localhost:8008
+}
+
+example.com:8448 {
+  reverse_proxy http://localhost:8008
+}
+```
+
+
+### nginx
+
+```
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    # For the federation port
+    listen 8448 ssl default_server;
+    listen [::]:8448 ssl default_server;
+
+    server_name matrix.example.com;
+
+    location ~* ^(\/_matrix|\/_synapse\/client) {
+        proxy_pass http://localhost:8008;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        # Nginx by default only allows file uploads up to 1M in size
+        # Increase client_max_body_size to match max_upload_size defined in homeserver.yaml
+        client_max_body_size 10M;
+    }
+}
+```
+
+**NOTE**: Do not add a path after the port in `proxy_pass`, otherwise nginx will
+canonicalise/normalise the URI.
+
 ### HAProxy
 
 ```
@@ -148,6 +150,40 @@ frontend matrix-federation
 
 backend matrix
   server matrix 127.0.0.1:8008
+```
+
+### traefik
+
+Example whilst using docker-compose
+
+```
+version: '3.5'
+
+networks:
+  frontend:
+    external:
+      name: frontend
+
+services:
+  app:
+    image: matrixdotorg/synapse:latest
+    container_name: synapse
+    restart: unless-stopped
+    ports:
+      - "8008:8008"
+      - "8448:8448"
+    networks:
+      - frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.synapse.tls=true"
+      - "traefik.http.services.synapse.loadbalancer.server.port=8008"
+      - "traefik.http.services.federation.loadbalancer.server.port=8448"
+      - "traefik.http.routers.synapse.rule=Host(`matrix.example.com`)"
+      - "traefik.http.routers.federation.rule=Host(`matrix.example.com`)"
+      - "traefik.http.routers.synapse.entrypoints=websecure"
+      - "traefik.http.routers.federation.entrypoints=synapse_federation"
+
 ```
 
 ## Homeserver Configuration
