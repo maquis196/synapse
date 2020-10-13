@@ -6,7 +6,30 @@ Synapse installation. This is a very powerful mechanism for administration and
 debugging.
 
 To enable it, first uncomment the `manhole` listener configuration in
-`homeserver.yaml`:
+`homeserver.yaml`. The configuration is slightly different if you're using docker.
+
+###### Docker usage
+
+If you are using Docker, set `bind_addresses` to `['0.0.0.0']` as shown
+
+```yaml
+listeners:
+  - port: 9000
+    bind_addresses: ['0.0.0.0']
+    type: manhole
+```
+
+You will then need to change the docker command to the following to include the manhole port forwarding. 
+
+```bash
+docker run -d --name synapse \
+    --mount type=volume,src=synapse-data,dst=/data \
+    -p 8008:8008 \
+    -p 9000:9000 \
+    matrixdotorg/synapse:latest
+```
+
+###### Native usage
 
 ```yaml
 listeners:
@@ -18,15 +41,8 @@ listeners:
 (`bind_addresses` in the above is important: it ensures that access to the
 manhole is only possible for local users).
 
-**Docker Note**
-If you are using docker, please ensure you use the following example;
 
-```yaml
-listeners:
-  - port: 9000
-    bind_addresses: ['0.0.0.0']
-    type: manhole
-```
+**Security Notice**
 
 Note that this will give administrative access to synapse to **all users** with
 shell access to the server. It should therefore **not** be enabled in
