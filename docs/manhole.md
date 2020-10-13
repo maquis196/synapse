@@ -20,21 +20,22 @@ listeners:
 ```
 
 You will then need to change the docker command to the following to include the
-manhole port forwarding. 
+manhole port forwarding. The `-p 127.0.0.1:9000:9000` below is important: it 
+ensures that access to the `manhole` is only possible for local users).
 
 ```bash
 docker run -d --name synapse \
     --mount type=volume,src=synapse-data,dst=/data \
     -p 8008:8008 \
-    -p 9000:9000 \
+    -p 127.0.0.1:9000:9000 \
     matrixdotorg/synapse:latest
 ```
 
 #### Native config
 
-If you are not using docker, set `bind_addresses` to `['::1', '127.0.0.1']` as shown, 
-the `bind_addresses` in the example below is important: it ensures that access to the 
-manhole is only possible for local users).
+If you are not using docker, set `bind_addresses` to `['::1', '127.0.0.1']` as shown.
+The `bind_addresses` in the example below is important: it ensures that access to the
+`manhole` is only possible for local users).
 
 ```yaml
 listeners:
