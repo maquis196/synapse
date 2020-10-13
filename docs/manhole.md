@@ -5,12 +5,20 @@ The "manhole" allows server administrators to access a Python shell on a running
 Synapse installation. This is a very powerful mechanism for administration and
 debugging.
 
+**_Security Warning_**
+
+Note that this will give administrative access to synapse to **all users** with
+shell access to the server. It should therefore **not** be enabled in
+environments where untrusted users have shell access.
+
+***
+
 To enable it, first uncomment the `manhole` listener configuration in
 `homeserver.yaml`. The configuration is slightly different if you're using docker.
 
 #### Docker config
 
-If you are using Docker, set `bind_addresses` to `['0.0.0.0']` as shown
+If you are using Docker, set `bind_addresses` to `['0.0.0.0']` as shown:
 
 ```yaml
 listeners:
@@ -43,12 +51,6 @@ listeners:
     bind_addresses: ['::1', '127.0.0.1']
     type: manhole
 ```
-
-**Security Notice**
-
-Note that this will give administrative access to synapse to **all users** with
-shell access to the server. It should therefore **not** be enabled in
-environments where untrusted users have shell access.
 
 #### Accessing synapse manhole
 
