@@ -8,7 +8,7 @@ debugging.
 To enable it, first uncomment the `manhole` listener configuration in
 `homeserver.yaml`. The configuration is slightly different if you're using docker.
 
-###### Docker usage
+#### Docker usage
 
 If you are using Docker, set `bind_addresses` to `['0.0.0.0']` as shown
 
@@ -29,7 +29,7 @@ docker run -d --name synapse \
     matrixdotorg/synapse:latest
 ```
 
-###### Native usage
+#### Native usage
 
 ```yaml
 listeners:
