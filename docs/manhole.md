@@ -8,7 +8,7 @@ debugging.
 To enable it, first uncomment the `manhole` listener configuration in
 `homeserver.yaml`. The configuration is slightly different if you're using docker.
 
-#### Docker usage
+#### Docker config
 
 If you are using Docker, set `bind_addresses` to `['0.0.0.0']` as shown
 
@@ -19,7 +19,8 @@ listeners:
     type: manhole
 ```
 
-You will then need to change the docker command to the following to include the manhole port forwarding. 
+You will then need to change the docker command to the following to include the
+manhole port forwarding. 
 
 ```bash
 docker run -d --name synapse \
@@ -29,7 +30,11 @@ docker run -d --name synapse \
     matrixdotorg/synapse:latest
 ```
 
-#### Native usage
+#### Native config
+
+If you are not using docker, set `bind_addresses` to `['::1', '127.0.0.1']` as shown, 
+the `bind_addresses` in the example below is important: it ensures that access to the 
+manhole is only possible for local users).
 
 ```yaml
 listeners:
@@ -38,15 +43,13 @@ listeners:
     type: manhole
 ```
 
-(`bind_addresses` in the above is important: it ensures that access to the
-manhole is only possible for local users).
-
-
 **Security Notice**
 
 Note that this will give administrative access to synapse to **all users** with
 shell access to the server. It should therefore **not** be enabled in
 environments where untrusted users have shell access.
+
+#### Accessing synapse manhole
 
 Then restart synapse, and point an ssh client at port 9000 on localhost, using
 the username `matrix`:
